@@ -1,14 +1,19 @@
 const axios = require("axios");
 const jwt = require('jsonwebtoken');
 
-// const BASE_URL = "http://localhost:16000/api/v1/gateway";
-const BASE_URL = "https://services.santimpay.com/api/v1/gateway";
+const PRODUCTION_BASE_URL = "https://services.santimpay.com/api/v1/gateway";
 
 class SantimpaySdk {
-  constructor(merchantId, token, privateKey) {
-    this.token = token;
+  constructor(merchantId, privateKey, testBed = false) {
     this.privateKey = privateKey;
     this.merchantId = merchantId;
+
+    this.baseUrl = PRODUCTION_BASE_URL;
+
+    if (testBed == true) {
+      this.baseUrl = "http://localhost:16000/api/v1/gateway";
+    }
+    
   }
 
   generateSignedToken(amount, paymentReason) {
@@ -29,7 +34,7 @@ class SantimpaySdk {
 
       const token = this.generateSignedToken(amount, paymentReason);
 
-      const response = await axios.post(`${BASE_URL}/initiate-payment`, {
+      const response = await axios.post(`${this.baseUrl}/initiate-payment`, {
         id,
         amount,
         reason: paymentReason,
@@ -38,11 +43,13 @@ class SantimpaySdk {
         successRedirectUrl,
         failureRedirectUrl,
         notifyUrl
-      }, {
-        headers: {
-          Authorization: `Bearer ${this.token}`
-        }
-      });
+      },
+      // {
+        // headers: {
+        //   Authorization: `Bearer ${this.token}`
+        // }
+      // }
+      );
 
       if (response.status === 200) {
         return response.data.url;
@@ -50,7 +57,7 @@ class SantimpaySdk {
         throw new Error("Failed to initiate payment");
       }
     } catch (error) {
-      if (error.response.data) {
+      if (error.response && error.response.data) {
         throw error.response.data;
       }
       throw error;
