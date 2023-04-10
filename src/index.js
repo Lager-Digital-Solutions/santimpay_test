@@ -1,9 +1,9 @@
-const axios = require("axios");
-const jwt = require('jsonwebtoken');
+import axios from "axios"
+import { signES256 } from "./utils/cryptography.js"
 
-const PRODUCTION_BASE_URL = "https://services.santimpay.com/api/v1/gateway";
+import { PRODUCTION_BASE_URL, TEST_BASE_URL } from "./utils/constants.js"
 
-class SantimpaySdk {
+export class SantimpaySdk {
   constructor(merchantId, privateKey, testBed = false) {
     this.privateKey = privateKey;
     this.merchantId = merchantId;
@@ -11,7 +11,7 @@ class SantimpaySdk {
     this.baseUrl = PRODUCTION_BASE_URL;
 
     if (testBed == true) {
-      this.baseUrl = "http://localhost:16000/api/v1/gateway";
+      this.baseUrl = TEST_BASE_URL;
     }
     
   }
@@ -26,7 +26,7 @@ class SantimpaySdk {
       generated: time,
     }
 
-    return jwt.sign(JSON.stringify(payload), this.privateKey, { algorithm: 'ES256' })
+    return signES256(payload, this.privateKey);
   }
 
   async generatePaymentUrl(id, amount, paymentReason, successRedirectUrl, failureRedirectUrl, notifyUrl) {
@@ -65,4 +65,4 @@ class SantimpaySdk {
   }
 }
 
-module.exports = SantimpaySdk;
+export default SantimpaySdk;
