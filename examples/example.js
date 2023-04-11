@@ -20,6 +20,18 @@ const id = Math.floor(Math.random() * 1000000000).toString();
 client.generatePaymentUrl(id, 1, "Payment for a coffee", successRedirectUrl, failureRedirectUrl, notifyUrl).then(url => {
     // redirect user to url to process payment
     console.log("Payment URL: ", url);
+    
+    setTimeout(() => {
+
+        console.log("\n\n*********************************")
+        console.log("checking for transaction...")
+        
+        client.checkTransactionStatus(id).then(transaction => {
+            console.log("Transaction: ", transaction);
+        }).catch(error => {
+            console.error(error)
+        })
+    }, 20_000)
 }).catch(error => {
     console.error(error)
 })

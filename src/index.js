@@ -10,13 +10,13 @@ export class SantimpaySdk {
 
     this.baseUrl = PRODUCTION_BASE_URL;
 
-    if (testBed == true) {
+    if (testBed) {
       this.baseUrl = TEST_BASE_URL;
     }
     
   }
 
-  generateSignedToken(amount, paymentReason) {
+  generateSignedTokenForInitiatePayment(amount, paymentReason) {
     const time = Math.floor(Date.now() / 1000);
 
     const payload = {
@@ -29,10 +29,22 @@ export class SantimpaySdk {
     return signES256(payload, this.privateKey);
   }
 
+  generateSignedTokenForGetTransaction(id) {
+    const time = Math.floor(Date.now() / 1000);
+
+    const payload = {
+      id,
+      merId: this.merchantId,
+      generated: time,
+    }
+
+    return signES256(payload, this.privateKey);
+  }
+
   async generatePaymentUrl(id, amount, paymentReason, successRedirectUrl, failureRedirectUrl, notifyUrl) {
     try {
 
-      const token = this.generateSignedToken(amount, paymentReason);
+      const token = this.generateSignedTokenForInitiatePayment(amount, paymentReason);
 
       const response = await axios.post(`${this.baseUrl}/initiate-payment`, {
         id,
@@ -53,6 +65,36 @@ export class SantimpaySdk {
 
       if (response.status === 200) {
         return response.data.url;
+      } else {
+        throw new Error("Failed to initiate payment");
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        throw error.response.data;
+      }
+      throw error;
+    }
+  }
+
+  async checkTransactionStatus(id) {
+    try {
+
+      const token = this.generateSignedTokenForGetTransaction(id);
+
+      const response = await axios.post(`${this.baseUrl}/fetch-transaction-status`, {
+        id,
+        merchantId: this.merchantId,
+        signedToken: token,
+      },
+      // {
+        // headers: {
+        //   Authorization: `Bearer ${this.token}`
+        // }
+      // }
+      );
+
+      if (response.status === 200) {
+        return response.data;
       } else {
         throw new Error("Failed to initiate payment");
       }
