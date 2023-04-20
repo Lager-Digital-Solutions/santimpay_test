@@ -41,12 +41,12 @@ export class SantimpaySdk {
     return signES256(payload, this.privateKey);
   }
 
-  async generatePaymentUrl(id, amount, paymentReason, successRedirectUrl, failureRedirectUrl, notifyUrl) {
+  async generatePaymentUrl(id, amount, paymentReason, successRedirectUrl, failureRedirectUrl, notifyUrl, phoneNumber = "") {
     try {
 
       const token = this.generateSignedTokenForInitiatePayment(amount, paymentReason);
 
-      const response = await axios.post(`${this.baseUrl}/initiate-payment`, {
+      const payload = {
         id,
         amount,
         reason: paymentReason,
@@ -55,7 +55,14 @@ export class SantimpaySdk {
         successRedirectUrl,
         failureRedirectUrl,
         notifyUrl
-      },
+      }
+
+      if (phoneNumber && phoneNumber.length > 0) {
+        payload.phoneNumber = phoneNumber
+      }
+      
+      const response = await axios.post(`${this.baseUrl}/initiate-payment`, payload,
+      
       // {
         // headers: {
         //   Authorization: `Bearer ${this.token}`
