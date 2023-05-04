@@ -12,12 +12,13 @@ const successRedirectUrl = "https://santimpay.com";
 const failureRedirectUrl = "https://santimpay.com";
 
 // backend url to receive a status update (webhook)
-const notifyUrl = "https://santimpay.com";
+// const notifyUrl = "https://santimpay.com";
+const notifyUrl = "https://webhooktest.requestcatcher.com/test";
 
 // custom ID used by merchant to identify the payment
 const id = Math.floor(Math.random() * 1000000000).toString();
 
-client.generatePaymentUrl(id, 1, "Payment for a coffee", successRedirectUrl, failureRedirectUrl, notifyUrl).then(url => {
+client.generatePaymentUrl(id, 1, "Payment for a coffee", successRedirectUrl, failureRedirectUrl, notifyUrl, "+251947407163").then(url => {
     // redirect user to url to process payment
     console.log("Payment URL: ", url);
     
@@ -35,3 +36,14 @@ client.generatePaymentUrl(id, 1, "Payment for a coffee", successRedirectUrl, fai
 }).catch(error => {
     console.error(error)
 })
+
+// client.directPayment(id, 1, "Payment for a coffee", notifyUrl, "+2519001234567", "Telebirr").then(response => {
+//     console.log(response)
+//     client.checkTransactionStatus(id).then(transaction => {
+//         console.log("Transaction: ", transaction);
+//     }).catch(error => {
+//         console.error(error)
+//     })
+// }).catch(error => {
+//     console.error(error)
+// })
