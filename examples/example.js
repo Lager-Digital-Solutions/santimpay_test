@@ -1,7 +1,7 @@
 import SantimpaySdk from "../lib/index.js";
 
 // production
-const PRIVATE_KEY_IN_PEM = `-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIPDaoRtwp0oX6X8FTRLDeoHfBFqrePqR2kCjQ68RWPjNoAoGCCqGSM49\nAwEHoUQDQgAEhLUSwugz8HplU8X+xUrJIrv6dRGfZ6VhjVxoUZLp+5kg8za/l8ft\nDyMIPiowQvVRp8EN4fII3gd9RGchfdocFA==\n-----END EC PRIVATE KEY-----\n`
+const PRIVATE_KEY_IN_PEM = `-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIG6+5aEJ5afr240/Q1p7qgMi6c+fCJUUoI73Ue83mm6GoAoGCCqGSM49\nAwEHoUQDQgAEKFaWz0GrIl7Tyz0qtscS1DunrogbANRgs3xZHDET27UEE9kh86Q/\nTPOUOcYFUoZm6oV1RvfVke1Z6A1R0Xjblg==\n-----END EC PRIVATE KEY-----\n`
 
 const GATEWAY_MERCHANT_ID = "9e2dab64-e2bb-4837-9b85-d855dd878d2b"
 
@@ -18,26 +18,26 @@ const notifyUrl = "https://webhooktest.requestcatcher.com/test";
 // custom ID used by merchant to identify the payment
 const id = Math.floor(Math.random() * 1000000000).toString();
 
-// client.generatePaymentUrl(id, 1, "Payment for a coffee", successRedirectUrl, failureRedirectUrl, notifyUrl, "+251947407163").then(url => {
-//     // redirect user to url to process payment
-//     console.log("Payment URL: ", url);
+client.generatePaymentUrl(id, 1, "Payment for a coffee", successRedirectUrl, failureRedirectUrl, notifyUrl, "+251947407163").then(url => {
+    // redirect user to url to process payment
+    console.log("Payment URL: ", url);
     
-//     setTimeout(() => {
+    setTimeout(() => {
 
-//         console.log("\n\n*********************************")
-//         console.log("checking for transaction...")
+        console.log("\n\n*********************************")
+        console.log("checking for transaction...")
         
-//         client.checkTransactionStatus(id).then(transaction => {
-//             console.log("Transaction: ", transaction);
-//         }).catch(error => {
-//             console.error(error)
-//         })
-//     }, 20_000)
-// }).catch(error => {
-//     console.error(error)
-// })
+        client.checkTransactionStatus(id).then(transaction => {
+            console.log("Transaction: ", transaction);
+        }).catch(error => {
+            console.error(error)
+        })
+    }, 20_000)
+}).catch(error => {
+    console.error(error)
+})
 
-// client.directPayment(id, 1, "Payment for a coffee", notifyUrl, "+2519001234567", "Telebirr").then(response => {
+// client.directPayment(id, 1, "Payment for a coffee", notifyUrl, "+251947407163", "Telebirr").then(response => {
 //     console.log(response)
 //     client.checkTransactionStatus(id).then(transaction => {
 //         console.log("Transaction: ", transaction);
@@ -49,14 +49,14 @@ const id = Math.floor(Math.random() * 1000000000).toString();
 // })
 
 
-client.sendToCustomer(id, 1, "refund for coffee", "+251932118929" , "Telebirr").then(response => {
-    console.log(response);
-    client.checkTransactionStatus(id).then(transaction => {
-        console.log("Transaction: ", transaction);
-    }).catch(error => {
-        console.error(error)
-    })
+// client.sendToCustomer(id, 1, "refund for coffee", "+251932118929" , "Telebirr").then(response => {
+//     console.log(response);
+//     client.checkTransactionStatus(id).then(transaction => {
+//         console.log("Transaction: ", transaction);
+//     }).catch(error => {
+//         console.error(error)
+//     })
    
-}).catch(error => {
-    console.error(error)
-})
+// }).catch(error => {
+//     console.error(error)
+// })
