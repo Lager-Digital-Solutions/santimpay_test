@@ -10,6 +10,7 @@ const client = new SantimpaySdk(GATEWAY_MERCHANT_ID, PRIVATE_KEY_IN_PEM, true);
 // client side pages to redirect user to after payment is completed/failed
 const successRedirectUrl = "https://santimpay.com";
 const failureRedirectUrl = "https://santimpay.com";
+const cancelRedirectUrl = "https://santimpay.com";
 
 // backend url to receive a status update (webhook)
 // const notifyUrl = "https://santimpay.com";
@@ -18,7 +19,7 @@ const notifyUrl = "https://webhooktest.requestcatcher.com/test";
 // custom ID used by merchant to identify the payment
 const id = Math.floor(Math.random() * 1000000000).toString();
 
-client.generatePaymentUrl(id, 1, "Payment for a coffee", successRedirectUrl, failureRedirectUrl, notifyUrl, "+251947407163").then(url => {
+client.generatePaymentUrl(id, 100, "Payment for a coffee", successRedirectUrl, failureRedirectUrl, notifyUrl, "+251000000", cancelRedirectUrl).then(url => {
     // redirect user to url to process payment
     console.log("Payment URL: ", url);
     
@@ -37,7 +38,7 @@ client.generatePaymentUrl(id, 1, "Payment for a coffee", successRedirectUrl, fai
     console.error(error)
 })
 
-// client.directPayment(id, 1, "Payment for a coffee", notifyUrl, "+251947407163", "Telebirr").then(response => {
+// client.directPayment(id, 10, "Payment for a coffee", notifyUrl, "+251900000000", "Telebirr").then(response => {
 //     console.log(response)
 //     client.checkTransactionStatus(id).then(transaction => {
 //         console.log("Transaction: ", transaction);

@@ -56,7 +56,7 @@ export class SantimpaySdk {
     return signES256(payload, this.privateKey);
   }
 
-  async generatePaymentUrl(id, amount, paymentReason, successRedirectUrl, failureRedirectUrl, notifyUrl, phoneNumber = "") {
+  async generatePaymentUrl(id, amount, paymentReason, successRedirectUrl, failureRedirectUrl, notifyUrl, phoneNumber = "", cancelRedirectUrl = "") {
     try {
 
       const token = this.generateSignedTokenForInitiatePayment(amount, paymentReason);
@@ -69,7 +69,8 @@ export class SantimpaySdk {
         signedToken: token,
         successRedirectUrl,
         failureRedirectUrl,
-        notifyUrl
+        notifyUrl,
+        cancelRedirectUrl,
       }
 
       if (phoneNumber && phoneNumber.length > 0) {
@@ -96,6 +97,49 @@ export class SantimpaySdk {
       }
       throw error;
     }
+  }
+
+  async sendToCustomer(id, amount, paymentReason, phoneNumber, paymentMethod) {
+    try {
+      const token = this.generateSignedTokenForDirectPaymentOrB2C(amount, paymentReason,this.merchantId, paymentMethod, phoneNumber);
+      const payload = {
+        id,
+        clientReference:id,
+        amount,
+        reason: paymentReason,
+        merchantId: this.merchantId,
+        signedToken: token,
+        receiverAccountNumber:phoneNumber,
+        paymentMethod
+      };
+    
+      const response = await axios.post(`${this.baseUrl}/payout-transfer`, payload
+      );
+
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        throw new Error("Failed to initiate B2C");
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        throw error.response.data;
+      }
+      throw error;
+    }
+  }
+
+  generateSignedTokenForDirectPaymentOrB2C(amount, paymentReason, paymentMethod, phoneNumber) {
+    const time = Math.floor(Date.now() / 1000);
+    const payload = {
+      amount,
+      paymentReason,
+      paymentMethod,
+      phoneNumber,
+      merchantId: this.merchantId,
+      generated: time
+    };
+    return signES256(payload, this.privateKey);
   }
 
   async directPayment(id, amount, paymentReason, notifyUrl, phoneNumber, paymentMethod) {
