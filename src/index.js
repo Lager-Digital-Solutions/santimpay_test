@@ -99,7 +99,7 @@ export class SantimpaySdk {
     }
   }
 
-  async sendToCustomer(id, amount, paymentReason, phoneNumber, paymentMethod) {
+  async sendToCustomer(id, amount, paymentReason, phoneNumber, paymentMethod, notifyUrl) {
     try {
       const token = this.generateSignedTokenForDirectPaymentOrB2C(amount, paymentReason,this.merchantId, paymentMethod, phoneNumber);
       const payload = {
@@ -110,6 +110,7 @@ export class SantimpaySdk {
         merchantId: this.merchantId,
         signedToken: token,
         receiverAccountNumber:phoneNumber,
+        notifyUrl,
         paymentMethod
       };
     

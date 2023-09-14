@@ -1,7 +1,7 @@
 import SantimpaySdk from "../lib/index.js";
 
 // production
-const PRIVATE_KEY_IN_PEM = `-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEII0qPPByHBzW3znAladzC0uQDi6vhgctF/r6NYlN4ftmoAoGCCqGSM49\nAwEHoUQDQgAE4zghgXLQRJWd56Fe282IVNChD+oa8cNdSAZ6DaELdExs2lKmjXeS\nxU/A8YCNg1GqgfrrLcx3eHnI+Qm6+ppgng==\n-----END EC PRIVATE KEY-----\n`
+const PRIVATE_KEY_IN_PEM = `-----BEGIN EC PRIVATE KEY-----\nMHcCAQEEIOMaKKZ/7V3zfvNSWkPU8dPWdMoQAtF+pXMoX77N3hjxoAoGCCqGSM49\nAwEHoUQDQgAE5QIQ+7iWonO2SXHg3amW83snCudYp3+her8JaeMU9mIxDhgvQk9w\nWtUvFQTe16IAb/c0UoJtBdJx5HJ+Z/CPLg==\n-----END EC PRIVATE KEY-----\n`
 
 const GATEWAY_MERCHANT_ID = "9e2dab64-e2bb-4837-9b85-d855dd878d2b"
 
@@ -14,12 +14,19 @@ const cancelRedirectUrl = "https://santimpay.com";
 
 // backend url to receive a status update (webhook)
 // const notifyUrl = "https://santimpay.com";
-const notifyUrl = "https://webhooktest.requestcatcher.com/test";
+const notifyUrl = "https://sant.requestcatcher.com/test";
 
 // custom ID used by merchant to identify the payment
 const id = Math.floor(Math.random() * 1000000000).toString();
 
-client.generatePaymentUrl(id, 1, "Payment for a coffee", successRedirectUrl, failureRedirectUrl, notifyUrl, "+251910000000", cancelRedirectUrl).then(url => {
+// client.sendToCustomer(id, 1, "refund for coffee", "+251947407163" , "Telebirr").then(response => {
+//     console.log(response)
+// }).catch(error => {
+//     console.error(error)
+// })
+
+
+client.generatePaymentUrl(id, 1, "payment", successRedirectUrl, failureRedirectUrl, notifyUrl, "+251947407163", cancelRedirectUrl).then(url => {
     // redirect user to url to process payment
     console.log("Payment URL: ", url);
     
@@ -38,6 +45,7 @@ client.generatePaymentUrl(id, 1, "Payment for a coffee", successRedirectUrl, fai
     console.error(error)
 })
 
+
 // client.directPayment(id, 1, "Payment for a coffee", notifyUrl, "+251947407163", "Telebirr").then(response => {
 //     console.log(response)
 //     client.checkTransactionStatus(id).then(transaction => {
@@ -50,14 +58,14 @@ client.generatePaymentUrl(id, 1, "Payment for a coffee", successRedirectUrl, fai
 // })
 
 
-// client.sendToCustomer(id, 1, "refund for coffee", "+251932118929" , "Telebirr").then(response => {
-//     console.log(response);
-//     client.checkTransactionStatus(id).then(transaction => {
-//         console.log("Transaction: ", transaction);
-//     }).catch(error => {
-//         console.error(error)
-//     })
+client.sendToCustomer(id, 1, "refund for coffee", "+251947407163" , "Telebirr", notifyUrl).then(response => {
+    console.log(response);
+    client.checkTransactionStatus(id).then(transaction => {
+        console.log("Transaction: ", transaction);
+    }).catch(error => {
+        console.error(error)
+    })
    
-// }).catch(error => {
-//     console.error(error)
-// })
+}).catch(error => {
+    console.error(error)
+})
