@@ -78,15 +78,10 @@ export class SantimpaySdk {
       }
       
       const response = await axios.post(`${this.baseUrl}/initiate-payment`, payload,
-      
-      // {
-        // headers: {
-        //   Authorization: `Bearer ${this.token}`
-        // }
-      // }
       );
 
       if (response.status === 200) {
+        console.log('response' + response.data.url)
         return response.data.url;
       } else {
         throw new Error("Failed to initiate payment");
@@ -189,7 +184,13 @@ export class SantimpaySdk {
     try {
 
       const token = this.generateSignedTokenForGetTransaction(id);
-
+      const data = {
+        id,
+        merchantId: this.merchantId,
+        signedToken: token,
+      }
+      console.log('checking')
+      console.log(data)
       const response = await axios.post(`${this.baseUrl}/fetch-transaction-status`, {
         id,
         merchantId: this.merchantId,
